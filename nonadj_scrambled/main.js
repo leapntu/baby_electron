@@ -7,7 +7,7 @@ let win
 function createWindow () {
   win = new BrowserWindow({width: 800, height: 600, fullscreen: false})
   // Uncomment to have developer tools open at run
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
   win.loadURL(`file://${__dirname}/html/index.html`)
   win.on('closed', () => {
     win = null
