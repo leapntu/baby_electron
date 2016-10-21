@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Participant Registration</title>
+  <!-- jQuery library -->
+  <script href="../js/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../js/bootstrap.min.css">
+  <!-- Latest compiled JavaScript -->
+  <script href="../js/bootstrap.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<br/><br/><br/><br/><br/><br/><br/>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-4"> </div>
+    <div class="col-xs-4">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3>Non-Adj Varset</h3></div>
+        <div class="panel-body">
+          Name: <br/> <input id="name" type="text"> <br/>
+          Age: <br/> <input id="age" type="text"> <br/>
+          RA: <br/> <input id="ra" type="text"> <br/>
+          <button type="button" onclick=login()>Register</button>
+        </div>
+        </div>
+      </div>
+    
+    <div class="col-xs-4"> </div>
+</div>
+</div>
+</body>
+<script>
+function login() {
+  var name = document.getElementById("name").value
+  var age = document.getElementById("age").value
+  var ra = document.getElementById("ra").value
+  var user_data = {'name': name, 'age': age, 'ra': ra}
+  localStorage.setItem("meta", JSON.stringify(user_data) )
+  location = "./task.html"
+}
+</script>
+</html>
