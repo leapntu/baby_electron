@@ -267,11 +267,16 @@ function handle_keyup (e) {
 }
 
 function handle_keydown (e) {
+  console.log(e.code)
   if (space_down == false && e.code == "Space") {
     space_down = true
     look_record.push(performance.now())
     if (mode == 'rest_begin'){start_famil()}
     if (mode == 'getter'){mode = "nil"; next_test_stimuli()}
+  }
+  
+  else if (e.code == "Escape") {
+    mode = "end"
   }
 }
 

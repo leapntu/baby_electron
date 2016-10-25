@@ -273,6 +273,11 @@ function handle_keydown (e) {
     if (mode == 'rest_begin'){start_famil()}
     if (mode == 'getter'){mode = "nil"; next_test_stimuli()}
   }
+  
+  else if (e.code == "Escape") {
+    mode = "end"
+  }
+  
 }
 
 function sum_index (start, stop) {
