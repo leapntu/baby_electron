@@ -85,18 +85,18 @@ var getter_start = 0
 
 Array.prototype.shuffle = function() {
     var input = this;
-     
+
     for (var i = input.length-1; i >=0; i--) {
-        var randomIndex = Math.floor(Math.random()*(i+1)); 
-        var itemAtIndex = input[randomIndex]; 
-        input[randomIndex] = input[i]; 
+        var randomIndex = Math.floor(Math.random()*(i+1));
+        var itemAtIndex = input[randomIndex];
+        input[randomIndex] = input[i];
         input[i] = itemAtIndex;
     }
     return input;
 }
 
 function init () {
-  
+
   video_div = document.getElementById('vidspot')
   canvas = document.getElementById('canvas')
   body = document.getElementById('body')
@@ -109,13 +109,13 @@ function preload () {
   createjs.Sound.alternateExtensions = ["mp3","wav"];
   var i = 0
   var manifest = []
-  
+
   while (i < na_varset.length) {
     console.log("Loading Stim", i)
     createjs.Sound.registerSound("../media/"+na_varset[i], "s"+parseInt(i))
     i += 1
   }
-  
+
   i = 0
   test_words = test_words.shuffle()
   while (i < test_words.length) {
@@ -123,12 +123,12 @@ function preload () {
     createjs.Sound.registerSound("../media/words/"+test_words[i], "t"+parseInt(i))
     i += 1
   }
-  
+
   manifest.push( {"id":"fam", "src":"../media/"+"tsums.mp4"} )
   manifest.push( {"id":"get", "src":"../media/"+"get.mp4"} )
   manifest.push( {"id":"check", "src":"../media/"+"check.jpg"})
   createjs.Sound.registerSound("../media/"+"ag.wav", "ag")
-  
+
   Q = new createjs.LoadQueue(true)
   Q.on('complete', setup)
   Q.loadManifest(manifest)
@@ -184,10 +184,10 @@ function mainLoop (delta) {
     stage.update()
     mode = 'rest_begin'
   }
-  
+
   else if (mode == 'famil') {
     if (audio_obj.playState == createjs.Sound.PLAY_FINISHED) {
-      
+
       stimuli += 1
       if (stimuli < na_varset.length){
         stimuli_record.push( [stimuli_record[stimuli_record.length - 1][0], performance.now()] )
@@ -195,7 +195,7 @@ function mainLoop (delta) {
         audio_obj = createjs.Sound.play("s" + parseInt(stimuli))
         stimuli_record.push([na_varset[stimuli], performance.now()])
       }
-      
+
       if (stimuli >= na_varset.length) {
         stimuli_record.push( [stimuli_record[stimuli_record.length - 1][0], performance.now()] )
         stimuli = 0
@@ -209,11 +209,23 @@ function mainLoop (delta) {
       }
     }
   }
-    
+
   else if (mode == 'test') {
+    if (space_down == true) {
+      var now = performance.now()
+      var stimuli_start = stimuli_record[stimuli_record.length - 1][1]
+      var total = now - stimuli_start
+      if (total > 21800.0) {
+        stimuli_record.push( [stimuli_record[stimuli_record.length - 1][0], performance.now()] )
+        stimuli += 1
+        if (stimuli >= test_words.length) {mode = "end"}
+        else {start_getter()}
+        }
+    }
     if (space_down == false) {
       var now = performance.now()
-      var away = sum_time( look_record[look_record.length - 1], now )[1]
+      var last_look = look_record[look_record.length - 1]
+      var away = sum_time( last_look, now )[1]
       if (away > 2000.0) {
         stimuli_record.push( [stimuli_record[stimuli_record.length - 1][0], performance.now()] )
         stimuli += 1
@@ -222,7 +234,7 @@ function mainLoop (delta) {
         }
     }
   }
-  
+
   else if (mode=="end") {
     createjs.Sound.stop()
     video_div.style.display = "none"
@@ -238,7 +250,7 @@ function mainLoop (delta) {
     write_data()
     mode = "all_stop"
   }
-  
+
   window.requestAnimationFrame(mainLoop)
 }
 
@@ -273,11 +285,11 @@ function handle_keydown (e) {
     if (mode == 'rest_begin'){start_famil()}
     if (mode == 'getter'){mode = "nil"; next_test_stimuli()}
   }
-  
+
   else if (e.code == "Escape") {
     mode = "end"
   }
-  
+
 }
 
 function sum_index (start, stop) {
@@ -290,7 +302,7 @@ function sum_index (start, stop) {
     var t = look_record[current + 1]
     var delta = t - s
     if (current % 2 == 0) {
-      looking += delta 
+      looking += delta
     }
     else if (current % 2 == 1) {
       away += delta
@@ -302,7 +314,7 @@ function sum_index (start, stop) {
 
 function sum_time (start_time, stop_time) {
   if (start_time > stop_time) {return "error"}
-  
+
   var delta = stop_time - start_time
   var looking = 0
   var away = 0
@@ -311,42 +323,42 @@ function sum_time (start_time, stop_time) {
   var stop_i = end_i
   var i = 0
   var val = 0
-  
+
   while (i < end_i + 1) {
     var val = look_record[i]
     if ( (val < start_time) ) {start_i = i + 1}
     if ( (val <= stop_time) ) {stop_i = i}
     i += 1
   }
-  
+
   if (start_time > look_record[end_i]) {start_i = 'above'}
   if (stop_time < look_record[0]) {stop_i = 'below'}
-  
+
   if (start_i == 'above') {
     if (end_i % 2 == 0) {
       return [delta, away]
     }
     else { return [looking, delta] }
   }
-  
+
   else if (stop_i == 'below') {
     return [looking, delta]
   }
-  
+
   else {
     var low_delta = look_record[start_i] - start_time
     var high_delta = stop_time - look_record[stop_i]
-    
+
     if (start_i % 2 == 0) { away += low_delta }
     else { looking += low_delta }
-    
+
     if (stop_i % 2 == 0) { looking += high_delta}
     else {away += high_delta}
 
     var result = sum_index(start_i, stop_i)
     looking += result[0]
     away += result[1]
-    
+
     return [looking, away]
   }
 }
