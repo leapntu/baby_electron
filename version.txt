@@ -1,0 +1,13 @@
+#Current Versions
+
+(NA_S)    nonadj_scrambled   1.0.1
+(NA_V)    nonadj_varset      1.0.1
+(SEG_S)   segment_scrambled  1.0.0  *ARCHIVED*
+(SEG_V)   segment_varset     1.0.0  *ARCHIVED*
+(NA_SIM)  nonadj_simulator   0.1.0  *ARCHIVED*
+
+
+#Changelog
+
+NA_S NA_V ------------------ 1.0.1
+Test stimuli max playtime set to 16300.0 ms

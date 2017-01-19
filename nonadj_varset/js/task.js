@@ -215,7 +215,7 @@ function mainLoop (delta) {
       var now = performance.now()
       var stimuli_start = stimuli_record[stimuli_record.length - 1][1]
       var total = now - stimuli_start
-      if (total > 21800.0) {
+      if (total > 16300.0) {
         stimuli_record.push( [stimuli_record[stimuli_record.length - 1][0], performance.now()] )
         stimuli += 1
         if (stimuli >= test_words.length) {mode = "end"}
